@@ -5,7 +5,7 @@ const Todo = require("./models/Todo");
 const app = express();
 require('dotenv').config();
 
-app.use(cors);
+app.use(cors());
 app.use(express.json());
 
 
@@ -21,16 +21,16 @@ mongoose.connect(process.env.MONGODB_URI,config)
     }
 )
 .catch(err=>{
-    console.log("Some problem occured")
+    console.log(err)
 })
 
 
 app.get("/",(req,res)=>{
     Todo.find((err,todos)=>{
         if(err){
-            console.log(err);
+            return res.send({message: err})
         }else{
-            res.json({message:"successfully connected",todos});
+            return res.json({message:"successfully connected",todos});
         }
     }
 )})
@@ -46,12 +46,12 @@ app.post("/create",(req,res)=>{
     })
 })
 
-app.get(":/",(req,res)=>{
-    const id =req.params.id;
-    Todo.findById(id,(err,todo)=>{
-        res.json(todo)
-    })
-})
+// app.get(":/",(req,res)=>{
+//     const id =req.params.id;
+//     Todo.findById(id,(err,todo)=>{
+//         res.json(todo)
+//     })
+// })
 
 app.post("/:id",(req,res)=>{
     const id =req.params.id;
@@ -70,5 +70,5 @@ app.post("/:id",(req,res)=>{
 )
 
 app.listen(process.env.PORT,()=>{
-    console.log("Server is running ")
+    console.log("Server is running on port " + process.env.PORT)
 })
